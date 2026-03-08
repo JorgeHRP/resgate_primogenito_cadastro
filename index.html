@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mansa Musa — Resgate do Primogénito</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --gold: #C9A84C;
+      --gold-light: #E2C97E;
+      --gold-dark: #9A7A2E;
+      --black: #080808;
+      --dark-card: #121212;
+      --white: #F5F0E8;
+      --muted: #7A7060;
+    }
+
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { height: 100%; }
+
+    body {
+      background-color: var(--black);
+      color: var(--white);
+      font-family: 'Montserrat', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 70% 50% at 50% -5%, rgba(201,168,76,0.15) 0%, transparent 55%),
+        radial-gradient(ellipse 50% 35% at 50% 105%, rgba(201,168,76,0.08) 0%, transparent 55%),
+        radial-gradient(ellipse 30% 25% at 10% 50%, rgba(201,168,76,0.04) 0%, transparent 50%),
+        radial-gradient(ellipse 30% 25% at 90% 50%, rgba(201,168,76,0.04) 0%, transparent 50%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+      pointer-events: none;
+      opacity: 0.4;
+      z-index: 0;
+    }
+
+    .wrapper {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 500px;
+      padding: 2rem 1.5rem;
+    }
+
+    .card {
+      background: linear-gradient(160deg, #181510 0%, #121212 40%, #111111 100%);
+      border: 1px solid rgba(201,168,76,0.2);
+      border-radius: 1px;
+      padding: 3.2rem 2.8rem 2.6rem;
+      position: relative;
+      box-shadow:
+        0 0 0 1px rgba(201,168,76,0.05),
+        0 60px 120px rgba(0,0,0,0.7),
+        0 20px 40px rgba(0,0,0,0.4),
+        inset 0 1px 0 rgba(201,168,76,0.12),
+        inset 0 -1px 0 rgba(201,168,76,0.04);
+      animation: fadeUp 1s cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+
+    .corner { position: absolute; width: 22px; height: 22px; border-color: var(--gold); border-style: solid; opacity: 0.65; }
+    .corner-tl { top:-1px; left:-1px;   border-width: 1.5px 0 0 1.5px; }
+    .corner-tr { top:-1px; right:-1px;  border-width: 1.5px 1.5px 0 0; }
+    .corner-bl { bottom:-1px; left:-1px;  border-width: 0 0 1.5px 1.5px; }
+    .corner-br { bottom:-1px; right:-1px; border-width: 0 1.5px 1.5px 0; }
+
+    .logo-area {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 2rem;
+      gap: 0.6rem;
+    }
+
+    .logo-img {
+      width: 96px;
+      height: auto;
+      opacity: 0;
+      filter: drop-shadow(0 0 18px rgba(201,168,76,0.25));
+      animation: fadeIn 0.8s 0.35s ease forwards;
+    }
+
+    .logo-fallback { display: none; flex-direction: column; align-items: center; }
+
+    .logo-mm {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 3rem;
+      font-weight: 600;
+      color: var(--gold);
+      letter-spacing: 0.15em;
+      line-height: 1;
+      text-shadow: 0 0 40px rgba(201,168,76,0.35);
+      animation: fadeIn 0.7s 0.4s ease both;
+    }
+
+    .divider-ornament {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      opacity: 0;
+      animation: fadeIn 0.7s 0.65s ease forwards;
+    }
+    .divider-ornament span { width: 36px; height: 1px; background: linear-gradient(90deg, transparent, var(--gold)); }
+    .divider-ornament span:last-child { background: linear-gradient(90deg, var(--gold), transparent); }
+    .divider-ornament i { font-style: normal; color: var(--gold); font-size: 0.5rem; opacity: 0.8; }
+
+    .logo-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 0.8rem;
+      font-weight: 300;
+      color: var(--white);
+      letter-spacing: 0.5em;
+      text-transform: uppercase;
+      opacity: 0;
+      animation: fadeIn 0.7s 0.7s ease forwards;
+    }
+
+    .title-block {
+      text-align: center;
+      margin-bottom: 2.4rem;
+      opacity: 0;
+      animation: fadeIn 0.7s 0.85s ease forwards;
+    }
+
+    .form-label-main {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.4rem;
+      font-weight: 400;
+      font-style: italic;
+      color: var(--white);
+      letter-spacing: 0.04em;
+    }
+
+    .form-label-sub {
+      display: block;
+      font-size: 0.58rem;
+      font-weight: 300;
+      letter-spacing: 0.55em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-top: 0.45rem;
+    }
+
+    .title-divider {
+      width: 1px;
+      height: 20px;
+      background: linear-gradient(180deg, transparent, var(--gold), transparent);
+      margin: 0.8rem auto 0;
+    }
+
+    .form-group {
+      margin-bottom: 1.8rem;
+      opacity: 0;
+      animation: fadeUp 0.6s ease forwards;
+      position: relative; /* Mantém o fluxo */
+    }
+    .form-group:nth-child(1) { animation-delay: 0.9s; }
+    .form-group:nth-child(2) { animation-delay: 1.0s; }
+    .form-group:nth-child(3) { animation-delay: 1.1s; z-index: 10; } /* Z-index maior para o grupo do telefone */
+
+    .field-label {
+      display: block;
+      font-size: 0.57rem;
+      letter-spacing: 0.45em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 0.6rem;
+    }
+
+    .field-input-wrap { position: relative; }
+
+    .field-input-wrap input {
+      display: block;
+      width: 100%;
+      background: transparent;
+      border: none;
+      border-bottom: 1px solid rgba(201,168,76,0.2);
+      color: var(--white);
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 300;
+      padding: 0.75rem 0;
+      outline: none;
+      transition: border-color 0.35s ease;
+      letter-spacing: 0.03em;
+    }
+
+    .field-input-wrap input::placeholder { color: rgba(122,112,96,0.4); font-size: 0.82rem; }
+    .field-input-wrap input:focus { border-bottom-color: rgba(201,168,76,0.45); }
+
+    .anim-line {
+      position: absolute;
+      bottom: 0; left: 0;
+      width: 0; height: 1px;
+      background: linear-gradient(90deg, var(--gold-dark), var(--gold-light));
+      transition: width 0.45s cubic-bezier(0.16,1,0.3,1);
+      pointer-events: none;
+    }
+    .field-input-wrap input:focus ~ .anim-line { width: 100%; }
+
+    .phone-row {
+      display: flex;
+      align-items: stretch;
+      width: 100%;
+      border-bottom: 1px solid rgba(201,168,76,0.2);
+      transition: border-color 0.35s ease;
+    }
+    .phone-row:focus-within {
+      border-bottom-color: rgba(201,168,76,0.6);
+    }
+
+    .ddi-btn {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      flex-shrink: 0;
+      background: transparent;
+      border: none;
+      color: var(--gold);
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 300;
+      padding: 0.75rem 0.6rem 0.75rem 0;
+      cursor: pointer;
+      outline: none;
+      white-space: nowrap;
+      letter-spacing: 0.02em;
+      transition: color 0.3s ease;
+      user-select: none;
+    }
+    .ddi-btn:hover { color: var(--gold-light); }
+
+    .ddi-flag { font-size: 1rem; line-height: 1; }
+
+    .ddi-arrow {
+      width: 0; height: 0;
+      border-left: 3px solid transparent;
+      border-right: 3px solid transparent;
+      border-top: 3.5px solid rgba(201,168,76,0.5);
+      transition: transform 0.25s ease;
+    }
+    .ddi-selector.open .ddi-arrow { transform: rotate(180deg); }
+
+    .phone-sep {
+      width: 1px;
+      background: rgba(201,168,76,0.15);
+      margin: 8px 10px;
+      flex-shrink: 0;
+    }
+
+    .tel-input {
+      flex: 1;
+      min-width: 0;
+      background: transparent;
+      border: none !important;
+      outline: none;
+      color: var(--white);
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 300;
+      padding: 0.75rem 0;
+      letter-spacing: 0.03em;
+    }
+    .tel-input::placeholder { color: rgba(122,112,96,0.4); font-size: 0.82rem; }
+
+    .ddi-selector {
+      position: relative;
+      flex-shrink: 0;
+    }
+
+    /* CORREÇÃO AQUI: Fundo totalmente opaco e z-index forçado */
+    .ddi-dropdown {
+      display: none;
+      position: absolute;
+      top: calc(100% + 5px); 
+      left: 0;
+      min-width: 280px;
+      background-color: #121212 !important; /* Cor sólida, sem transparência */
+      border: 1px solid var(--gold);
+      border-radius: 2px;
+      z-index: 999999 !important; /* Valor extremo para ficar sobre o botão */
+      pointer-events: all; /* Garante que capture o clique */
+      box-shadow: 0 15px 40px rgba(0,0,0,0.9); /* Sombra pesada para bloquear o fundo */
+      overflow: hidden;
+      animation: dropDown 0.2s ease-out both;
+    }
+    .ddi-selector.open .ddi-dropdown { display: block; }
+
+    @keyframes dropDown {
+      from { opacity: 0; transform: translateY(-6px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .ddi-search-wrap {
+      padding: 0.6rem 0.75rem;
+      border-bottom: 1px solid rgba(201,168,76,0.1);
+      background-color: #121212;
+    }
+
+    .ddi-search {
+      display: block;
+      width: 100%;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(201,168,76,0.15);
+      border-radius: 1px;
+      color: var(--white);
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.78rem;
+      font-weight: 300;
+      padding: 0.42rem 0.6rem;
+      outline: none;
+      transition: border-color 0.3s ease;
+    }
+    .ddi-search::placeholder { color: rgba(122,112,96,0.45); }
+    .ddi-search:focus { border-color: rgba(201,168,76,0.35); }
+
+    .ddi-list {
+      max-height: 210px;
+      overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(201,168,76,0.2) transparent;
+      background-color: #121212; /* Garante opacidade na lista */
+    }
+    .ddi-list::-webkit-scrollbar { width: 3px; }
+    .ddi-list::-webkit-scrollbar-thumb { background: rgba(201,168,76,0.2); border-radius: 2px; }
+
+    .ddi-option {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.56rem 0.85rem;
+      cursor: pointer;
+      transition: background 0.15s ease;
+      font-size: 0.79rem;
+      font-weight: 300;
+      color: var(--white);
+      background-color: #121212;
+    }
+    .ddi-option:hover   { background: rgba(201,168,76,0.07); }
+    .ddi-option.active  { background: rgba(201,168,76,0.11); color: var(--gold-light); }
+    .ddi-option .o-flag { font-size: 0.95rem; }
+    .ddi-option .o-name { flex: 1; }
+    .ddi-option .o-code { color: var(--gold); font-size: 0.74rem; opacity: 0.8; }
+
+    .submit-wrap {
+      margin-top: 2.6rem;
+      opacity: 0;
+      animation: fadeUp 0.6s 1.2s ease forwards;
+      position: relative;
+      z-index: 1; /* Valor baixo para ficar atrás do dropdown */
+    }
+
+    .btn-submit {
+      width: 100%;
+      background: transparent;
+      border: 1px solid rgba(201,168,76,0.4);
+      color: var(--gold);
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.65rem;
+      font-weight: 500;
+      letter-spacing: 0.5em;
+      text-transform: uppercase;
+      padding: 1.15rem 1rem;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.4s ease, color 0.4s ease, box-shadow 0.4s ease;
+    }
+    .btn-submit::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(105deg, transparent 35%, rgba(201,168,76,0.08) 50%, transparent 65%);
+      transform: translateX(-100%);
+      transition: transform 0.8s ease;
+    }
+    .btn-submit:hover { border-color: rgba(201,168,76,0.7); color: var(--gold-light); box-shadow: 0 0 25px rgba(201,168,76,0.07); }
+    .btn-submit:hover::before { transform: translateX(200%); }
+    .btn-submit:active { transform: scale(0.995); }
+    .btn-submit:disabled { opacity: 0.45; cursor: not-allowed; }
+
+    .status-msg {
+      text-align: center;
+      font-size: 0.65rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      margin-top: 1.1rem;
+      min-height: 1.2em;
+      opacity: 0;
+      transition: opacity 0.4s ease;
+    }
+    .status-msg.visible { opacity: 1; }
+    .status-msg.success { color: var(--gold); }
+    .status-msg.error   { color: #c05040; }
+
+    .card-footer {
+      margin-top: 2.2rem;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      opacity: 0;
+      animation: fadeIn 0.6s 1.4s ease forwards;
+    }
+    .footer-line { width: 60px; height: 1px; background: linear-gradient(90deg, transparent, rgba(201,168,76,0.2), transparent); }
+    .card-footer span { font-size: 0.53rem; letter-spacing: 0.42em; text-transform: uppercase; color: rgba(122,112,96,0.38); }
+
+    .success-overlay {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 1.2rem;
+      padding: 3rem 0 2rem;
+    }
+    .success-overlay.show { display: flex; animation: fadeIn 0.6s ease both; }
+
+    .success-ring { position: relative; width: 60px; height: 60px; }
+    .success-ring::before {
+      content: '';
+      position: absolute; inset: 0;
+      border: 1px solid rgba(201,168,76,0.3);
+      border-radius: 50%;
+      animation: pulse 2s ease infinite;
+    }
+    @keyframes pulse {
+      0%,100% { transform: scale(1); opacity: 0.5; }
+      50%      { transform: scale(1.18); opacity: 0; }
+    }
+    .success-icon {
+      position: absolute; inset: 0;
+      border: 1px solid var(--gold);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .success-icon svg {
+      width: 22px; height: 22px;
+      stroke: var(--gold); fill: none; stroke-width: 1.5;
+      stroke-dasharray: 30; stroke-dashoffset: 30;
+      animation: drawCheck 0.5s 0.3s ease forwards;
+    }
+    @keyframes drawCheck { to { stroke-dashoffset: 0; } }
+
+    .success-title { font-family: 'Cormorant Garamond', serif; font-size: 1.6rem; font-weight: 300; color: var(--white); letter-spacing: 0.08em; }
+    .success-sub { font-size: 0.62rem; letter-spacing: 0.42em; text-transform: uppercase; color: var(--muted); }
+
+    @keyframes fadeUp { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
+    @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <div class="card">
+      <div class="corner corner-tl"></div>
+      <div class="corner corner-tr"></div>
+      <div class="corner corner-bl"></div>
+      <div class="corner corner-br"></div>
+
+      <div class="logo-area">
+        <img class="logo-img" src="imag/logo.png" alt="Mansa Musa"
+          onload="this.style.opacity=1"
+          onerror="this.style.display='none'; document.querySelector('.logo-fallback').style.display='flex';" />
+        <div class="logo-fallback"><div class="logo-mm">MM</div></div>
+        <div class="divider-ornament"><span></span><i>✦</i><span></span></div>
+        <div class="logo-name">Mansa Musa</div>
+      </div>
+
+      <div class="title-block">
+        <p class="form-label-main">Resgate do Primogénito</p>
+        <span class="form-label-sub">Cadastro de Registo</span>
+        <div class="title-divider"></div>
+      </div>
+
+      <div id="form-section">
+
+        <div class="form-group">
+          <label class="field-label" for="nome">Nome Completo</label>
+          <div class="field-input-wrap">
+            <input type="text" id="nome" placeholder="O seu nome completo" required autocomplete="name" />
+            <span class="anim-line"></span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="field-label" for="email">Endereço de Email</label>
+          <div class="field-input-wrap">
+            <input type="email" id="email" placeholder="email@exemplo.com" required autocomplete="email" />
+            <span class="anim-line"></span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="field-label">Número de Telefone</label>
+
+          <div class="phone-row">
+            <div class="ddi-selector" id="ddi-selector">
+              <button type="button" class="ddi-btn" onclick="toggleDDI(event)">
+                <span class="ddi-flag" id="ddi-flag">🇵🇹</span>
+                <span id="ddi-code">+351</span>
+                <span class="ddi-arrow"></span>
+              </button>
+              <div class="ddi-dropdown" id="ddi-dropdown">
+                <div class="ddi-search-wrap">
+                  <input class="ddi-search" type="text" placeholder="Pesquisar país..."
+                    id="ddi-search"
+                    oninput="filterDDI(this.value)"
+                    onclick="event.stopPropagation()" />
+                </div>
+                <div class="ddi-list" id="ddi-list"></div>
+              </div>
+            </div>
+
+            <div class="phone-sep"></div>
+
+            <input class="tel-input" type="tel" id="telefone"
+              placeholder="912 345 678" required autocomplete="tel" />
+          </div>
+        </div>
+
+        <div class="submit-wrap">
+          <button type="button" class="btn-submit" id="submit-btn" onclick="handleSubmit()">
+            Registar
+          </button>
+          <p class="status-msg" id="status-msg"></p>
+        </div>
+      </div>
+
+      <div class="success-overlay" id="success-overlay">
+        <div class="success-ring">
+          <div class="success-icon">
+            <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+        </div>
+        <p class="success-title">Bem-vindo</p>
+        <p class="success-sub">Registo concluído com sucesso</p>
+      </div>
+
+      <div class="card-footer">
+        <div class="footer-line"></div>
+        <span>© Mansa Musa</span>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const countries = [
+      { flag:'🇵🇹', name:'Portugal',            code:'+351' },
+      { flag:'🇧🇷', name:'Brasil',               code:'+55'  },
+      { flag:'🇦🇴', name:'Angola',               code:'+244' },
+      { flag:'🇲🇿', name:'Moçambique',           code:'+258' },
+      { flag:'🇨🇻', name:'Cabo Verde',           code:'+238' },
+      { flag:'🇸🇹', name:'São Tomé e Príncipe',  code:'+239' },
+      { flag:'🇬🇼', name:'Guiné-Bissau',         code:'+245' },
+      { flag:'🇹🇱', name:'Timor-Leste',          code:'+670' },
+      { flag:'🇲🇦', name:'Marrocos',             code:'+212' },
+      { flag:'🇫🇷', name:'França',               code:'+33'  },
+      { flag:'🇬🇧', name:'Reino Unido',          code:'+44'  },
+      { flag:'🇩🇪', name:'Alemanha',             code:'+49'  },
+      { flag:'🇪🇸', name:'Espanha',              code:'+34'  },
+      { flag:'🇮🇹', name:'Itália',               code:'+39'  },
+      { flag:'🇳🇱', name:'Países Baixos',        code:'+31'  },
+      { flag:'🇧🇪', name:'Bélgica',              code:'+32'  },
+      { flag:'🇨🇭', name:'Suíça',                code:'+41'  },
+      { flag:'🇦🇹', name:'Áustria',              code:'+43'  },
+      { flag:'🇸🇪', name:'Suécia',               code:'+46'  },
+      { flag:'🇳🇴', name:'Noruega',              code:'+47'  },
+      { flag:'🇩🇰', name:'Dinamarca',            code:'+45'  },
+      { flag:'🇫🇮', name:'Finlândia',            code:'+358' },
+      { flag:'🇮🇪', name:'Irlanda',              code:'+353' },
+      { flag:'🇵🇱', name:'Polónia',              code:'+48'  },
+      { flag:'🇷🇺', name:'Rússia',               code:'+7'   },
+      { flag:'🇺🇸', name:'Estados Unidos',       code:'+1'   },
+      { flag:'🇨🇦', name:'Canadá',               code:'+1'   },
+      { flag:'🇲🇽', name:'México',               code:'+52'  },
+      { flag:'🇦🇷', name:'Argentina',            code:'+54'  },
+      { flag:'🇨🇴', name:'Colômbia',             code:'+57'  },
+      { flag:'🇨🇱', name:'Chile',                code:'+56'  },
+      { flag:'🇵🇪', name:'Peru',                 code:'+51'  },
+      { flag:'🇿🇦', name:'África do Sul',        code:'+27'  },
+      { flag:'🇳🇬', name:'Nigéria',              code:'+234' },
+      { flag:'🇬🇭', name:'Gana',                 code:'+233' },
+      { flag:'🇰🇪', name:'Quénia',               code:'+254' },
+      { flag:'🇨🇮', name:'Costa do Marfim',      code:'+225' },
+      { flag:'🇸🇳', name:'Senegal',              code:'+221' },
+      { flag:'🇨🇩', name:'Congo (RDC)',          code:'+243' },
+      { flag:'🇨🇲', name:'Camarões',             code:'+237' },
+      { flag:'🇮🇳', name:'Índia',                code:'+91'  },
+      { flag:'🇨🇳', name:'China',                code:'+86'  },
+      { flag:'🇯🇵', name:'Japão',                code:'+81'  },
+      { flag:'🇦🇪', name:'Emirados Árabes',      code:'+971' },
+      { flag:'🇸🇦', name:'Arábia Saudita',       code:'+966' },
+      { flag:'🇶🇦', name:'Qatar',                code:'+974' },
+      { flag:'🇦🇺', name:'Austrália',            code:'+61'  },
+    ];
+
+    let selected = countries[0];
+
+    function renderList(list) {
+      const el = document.getElementById('ddi-list');
+      el.innerHTML = '';
+      list.forEach(c => {
+        const d = document.createElement('div');
+        d.className = 'ddi-option' + (c === selected ? ' active' : '');
+        d.innerHTML = `<span class="o-flag">${c.flag}</span><span class="o-name">${c.name}</span><span class="o-code">${c.code}</span>`;
+        d.onclick = (e) => {
+          e.stopPropagation();
+          pickDDI(c);
+        };
+        el.appendChild(d);
+      });
+    }
+
+    function pickDDI(c) {
+      selected = c;
+      document.getElementById('ddi-flag').textContent = c.flag;
+      document.getElementById('ddi-code').textContent = c.code;
+      closeDDI();
+    }
+
+    function toggleDDI(event) {
+      if (event) event.stopPropagation();
+      const s = document.getElementById('ddi-selector');
+      if (s.classList.contains('open')) { closeDDI(); return; }
+      s.classList.add('open');
+      document.getElementById('ddi-search').value = '';
+      renderList(countries);
+      setTimeout(() => document.getElementById('ddi-search').focus(), 50);
+    }
+
+    function closeDDI() {
+      document.getElementById('ddi-selector').classList.remove('open');
+    }
+
+    function filterDDI(q) {
+      const f = q.toLowerCase();
+      renderList(countries.filter(c => c.name.toLowerCase().includes(f) || c.code.includes(f)));
+    }
+
+    document.addEventListener('click', e => {
+      if (!document.getElementById('ddi-selector').contains(e.target)) closeDDI();
+    });
+
+    document.getElementById('telefone').addEventListener('input', function() {
+      let v = this.value.replace(/\D/g, '').slice(0, 11);
+      if (v.length > 7)      v = v.slice(0,3)+' '+v.slice(3,6)+' '+v.slice(6);
+      else if (v.length > 3) v = v.slice(0,3)+' '+v.slice(3);
+      this.value = v;
+    });
+
+    async function handleSubmit() {
+      // Bloqueio extra: Se o menu estiver aberto, não envia
+      if (document.getElementById('ddi-selector').classList.contains('open')) return;
+
+      const nome   = document.getElementById('nome').value.trim();
+      const email  = document.getElementById('email').value.trim();
+      const numRaw = document.getElementById('telefone').value.replace(/\s/g, '');
+      const telefone = selected.code + numRaw;
+
+      if (!nome || !email || !numRaw) { showStatus('Por favor preencha todos os campos.', 'error'); return; }
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { showStatus('Por favor insira um email válido.', 'error'); return; }
+
+      const btn = document.getElementById('submit-btn');
+      btn.disabled = true;
+      btn.textContent = 'A enviar...';
+
+      try {
+        await fetch('https://jorge-n8n.rijyaf.easypanel.host/webhook/8f649fa0-0a7d-402e-b77c-02a63d69bc9e', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ nome, email, telefone }),
+          mode: 'no-cors'
+        });
+        document.getElementById('form-section').style.display = 'none';
+        document.getElementById('success-overlay').classList.add('show');
+      } catch {
+        btn.disabled = false;
+        btn.textContent = 'Registar';
+        showStatus('Erro ao enviar. Tente novamente.', 'error');
+      }
+    }
+
+    function showStatus(msg, type) {
+      const el = document.getElementById('status-msg');
+      el.textContent = msg;
+      el.className = 'status-msg visible ' + type;
+    }
+
+    renderList(countries);
+  </script>
+</body>
+</html>
